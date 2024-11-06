@@ -5,3 +5,6 @@ In this Series I have Practiced Daily SQL Interview Questions
 
 
 #Day:-2 EY Data Analyst SQL question.(05/11/24)
+
+
+#Day:-3 Indium (Medium) SQL Quesiton (06/11/24) 
