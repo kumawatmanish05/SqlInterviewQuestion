@@ -11,3 +11,11 @@ In this Series I have Practiced Daily SQL Interview Questions
 
 
 #Day:-4 Meesho SQL Question Medium Level(08/11/24)
+
+
+#Day:-5 SQl Ranking Function (27/03/26)
+
+
+
+
+
