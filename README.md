@@ -91,22 +91,113 @@ LIMIT 5;
 
 
 
-#Day:-1 HBSC SQL Question(04/11/24)
-
-
-#Day:-2 EY Data Analyst SQL question.(05/11/24)
-
-
-#Day:-3 Indium (Medium) SQL Quesiton (06/11/24) 
-
-
-#Day:-4 Meesho SQL Question Medium Level(08/11/24)
-
-
-#Day:-5 SQl Ranking Function (27/03/26)
 
 
 
 
+# =========================
+# 🔥 CTE vs Subquery vs Temp Table
+# =========================
+
+👉 All three are used to create intermediate result sets in SQL.
+
+✔ Used to simplify complex queries
+✔ Help in breaking down logic
+❗ Difference is in scope, performance & usability
 
 
+# =========================
+# 🔹 1. CTE (Common Table Expression)
+# =========================
+
+👉 Defined using WITH clause
+
+✔ Improves readability
+✔ Can be reused in same query
+✔ Supports recursion
+❗ Exists only during query execution
+
+WITH temp AS (
+    SELECT customer_id, SUM(sales) total_sales
+    FROM orders
+    GROUP BY customer_id
+)
+SELECT * FROM temp;
+
+
+# =========================
+# 🔹 2. Subquery
+# =========================
+
+👉 Query inside another query
+
+✔ Simple and easy to write
+✔ Used in SELECT, WHERE, FROM
+❗ Hard to read when nested deeply
+❗ Cannot be reused easily
+
+SELECT *
+FROM (
+    SELECT customer_id, SUM(sales) total_sales
+    FROM orders
+    GROUP BY customer_id
+) t;
+
+
+# =========================
+# 🔹 3. Temp Table
+# =========================
+
+👉 Temporary table stored in database
+
+✔ Can be reused multiple times
+✔ Good for large data
+✔ Improves performance in complex queries
+❗ Requires CREATE TABLE permission
+
+CREATE TEMP TABLE temp_sales AS
+SELECT customer_id, SUM(sales) total_sales
+FROM orders
+GROUP BY customer_id;
+
+SELECT * FROM temp_sales;
+
+
+# =========================
+# 🔥 Key Differences
+# =========================
+
+| Feature        | CTE             | Subquery        | Temp Table        |
+|----------------|-----------------|-----------------|-------------------|
+| Readability    | High ✅          | Medium ⚠️       | High ✅           |
+| Reusability    | Limited         | No ❌           | Yes ✅            |
+| Performance    | Medium          | Low (nested)    | High (large data) |
+| Storage        | No              | No              | Yes (temporary)   |
+| Recursion      | Yes ✅          | No ❌           | No ❌             |
+| Scope          | Single Query    | Single Query    | Session-based     |
+
+
+# =========================
+# 🔹 When to Use What?
+# =========================
+
+👉 Use CTE:
+✔ When query is complex
+✔ When readability matters
+✔ When recursion is needed
+
+👉 Use Subquery:
+✔ For simple filtering
+✔ Small queries
+
+👉 Use Temp Table:
+✔ Large datasets
+✔ Multiple reuse
+✔ Performance optimization
+
+
+# =========================
+# 🎯 Interview One-Liner
+# =========================
+
+👉 CTE improves readability, subquery is for quick logic, and temp table is best for handling large reusable datasets.
