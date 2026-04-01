@@ -528,3 +528,180 @@ WHERE rnk <= 2;
 
 👉 Nested CTEs define a CTE inside another CTE, but are 
 rarely used due to limited support and readability issues.
+
+
+
+
+
+
+-- =========================
+-- 🔥 Recursive CTE
+-- =========================
+
+👉 A Recursive CTE is a CTE that references itself.
+
+✔ Used for hierarchical & iterative problems
+✔ Executes repeatedly until condition is met
+✔ Has two parts:
+   1. Anchor Query (base case)
+   2. Recursive Query (repeating part)
+❗ Must use UNION ALL
+
+
+-- =========================
+-- 🔹 Syntax
+-- =========================
+
+WITH RECURSIVE cte_name AS (
+
+    -- Anchor Query
+    SELECT column
+    FROM table
+    WHERE condition
+
+    UNION ALL
+
+    -- Recursive Query
+    SELECT column
+    FROM table t
+    JOIN cte_name c
+    ON condition
+)
+SELECT *
+FROM cte_name;
+
+
+-- =========================
+-- 🔥 Example 1: Generate Numbers (1 to 5)
+-- =========================
+
+WITH RECURSIVE numbers AS (
+
+    -- Anchor
+    SELECT 1 AS n
+
+    UNION ALL
+
+    -- Recursive
+    SELECT n + 1
+    FROM numbers
+    WHERE n < 5
+)
+SELECT * FROM numbers;
+
+
+-- =========================
+-- Output
+-- =========================
+
+| n |
+|---|
+| 1 |
+| 2 |
+| 3 |
+| 4 |
+| 5 |
+
+
+-- =========================
+-- 🔥 Example 2: Factorial (Advanced 🔥)
+-- =========================
+
+WITH RECURSIVE fact AS (
+
+    -- Anchor
+    SELECT 1 AS n, 1 AS factorial
+
+    UNION ALL
+
+    -- Recursive
+    SELECT n + 1,
+           factorial * (n + 1)
+    FROM fact
+    WHERE n < 5
+)
+SELECT * FROM fact;
+
+
+-- =========================
+-- Output
+-- =========================
+
+| n | factorial |
+|---|-----------|
+| 1 | 1         |
+| 2 | 2         |
+| 3 | 6         |
+| 4 | 24        |
+| 5 | 120       |
+
+
+-- =========================
+-- 🔥 Example 3: Employee Hierarchy
+-- =========================
+
+| emp_id | manager_id | name  |
+|--------|------------|-------|
+| 1      | NULL       | CEO   |
+| 2      | 1          | A     |
+| 3      | 1          | B     |
+| 4      | 2          | C     |
+| 5      | 2          | D     |
+
+
+WITH RECURSIVE emp_tree AS (
+
+    -- Anchor (Top Level)
+    SELECT emp_id, manager_id, name, 1 AS level
+    FROM employees
+    WHERE manager_id IS NULL
+
+    UNION ALL
+
+    -- Recursive (Find children)
+    SELECT e.emp_id, e.manager_id, e.name, et.level + 1
+    FROM employees e
+    JOIN emp_tree et
+    ON e.manager_id = et.emp_id
+)
+SELECT * FROM emp_tree;
+
+
+-- =========================
+-- Output
+-- =========================
+
+| emp_id | manager_id | name | level |
+|--------|------------|------|-------|
+| 1      | NULL       | CEO  | 1     |
+| 2      | 1          | A    | 2     |
+| 3      | 1          | B    | 2     |
+| 4      | 2          | C    | 3     |
+| 5      | 2          | D    | 3     |
+
+
+-- =========================
+-- 🔹 Use-Cases
+-- =========================
+
+-- 1. 🎯 Organizational hierarchy
+-- 2. 🎯 Tree / Graph traversal
+-- 3. 🎯 Generate sequences (numbers, dates)
+-- 4. 🎯 Mathematical problems (factorial, Fibonacci)
+
+
+-- =========================
+-- ❗ Important Notes
+-- =========================
+
+👉 Always use UNION ALL  
+👉 Must include stopping condition (else infinite loop 💀)  
+👉 Anchor runs once, recursive runs multiple times  
+
+
+-- =========================
+-- 🎯 Interview One-Liner
+-- =========================
+
+👉 A recursive CTE repeatedly references itself to 
+solve hierarchical or iterative problems in SQL.
