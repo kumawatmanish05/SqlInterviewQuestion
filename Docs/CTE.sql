@@ -94,6 +94,117 @@ SELECT *,
 FROM temp;
 
 
+
+-- =========================
+-- 🔥 Advantages of CTE (Common Table Expression)
+-- =========================
+
+👉 CTEs are used to simplify complex SQL queries.
+
+✔ Makes SQL more readable
+✔ Helps break queries into steps
+✔ Reusable within the same query
+✔ Supports recursion
+✔ Better debugging
+
+
+-- =========================
+-- 🔹 Advantages
+-- =========================
+
+-- 1. 🎯 Improves Readability
+-- Break complex queries into smaller logical parts
+
+WITH temp AS (
+    SELECT customer_id, SUM(sales) total_sales
+    FROM orders
+    GROUP BY customer_id
+)
+SELECT *
+FROM temp;
+
+
+-- 2. 🎯 Step-by-Step Query Writing
+-- Makes query easier to understand
+
+WITH step1 AS (
+    SELECT * FROM orders WHERE sales > 50
+),
+step2 AS (
+    SELECT customer_id, SUM(sales) total_sales
+    FROM step1
+    GROUP BY customer_id
+)
+SELECT * FROM step2;
+
+
+-- 3. 🎯 Reusability (within query)
+-- Same CTE can be used multiple times
+
+WITH temp AS (
+    SELECT customer_id, SUM(sales) total_sales
+    FROM orders
+    GROUP BY customer_id
+)
+SELECT *
+FROM temp
+WHERE total_sales > 100;
+
+
+-- 4. 🎯 Supports Recursion 🔥
+-- Useful for hierarchical data
+
+WITH RECURSIVE numbers AS (
+    SELECT 1 AS n
+    UNION ALL
+    SELECT n + 1
+    FROM numbers
+    WHERE n < 5
+)
+SELECT * FROM numbers;
+
+
+-- 5. 🎯 Better Alternative to Subqueries
+-- Cleaner than nested subqueries
+
+WITH temp AS (
+    SELECT customer_id, SUM(sales) total_sales
+    FROM orders
+    GROUP BY customer_id
+)
+SELECT *
+FROM temp;
+
+
+-- 6. 🎯 Easier Debugging
+-- You can test each step separately
+
+WITH temp AS (
+    SELECT * FROM orders
+)
+SELECT * FROM temp;
+
+
+-- =========================
+-- ❗ Important Notes
+-- =========================
+
+👉 Exists only during query execution  
+👉 Not stored permanently  
+👉 Improves maintainability  
+
+
+-- =========================
+-- 🎯 Interview One-Liner
+-- =========================
+
+👉 CTE improves readability, supports recursion, 
+and helps break complex queries into simpler steps.
+
+
+
+
+
 # =========================
 # 🔥 Recursive CTE (Important)
 # =========================
