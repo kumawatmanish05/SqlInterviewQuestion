@@ -262,9 +262,9 @@ FROM temp;
 
 
 
--- =========================
+-- ================================
 -- 🔥 Multiple CTEs (Chaining CTEs)
--- =========================
+-- ================================
 
 👉 Multiple CTEs are defined together using WITH and separated by commas.
 
@@ -403,3 +403,128 @@ SELECT * FROM ranked;
 
 👉 Multiple CTEs allow breaking complex queries into 
 step-by-step logical blocks for better readability and maintainability.
+
+
+
+
+
+
+-- =========================
+-- 🔥 Nested CTEs
+-- =========================
+
+👉 Nested CTE means defining a CTE inside another CTE.
+
+✔ Used to build multi-level logic
+✔ Helps in complex transformations
+✔ Inner CTE runs first, then outer
+❗ Not all SQL databases support true nesting (PostgreSQL ❌)
+❗ Prefer Multiple CTEs (chaining) instead
+
+
+-- =========================
+-- 🔹 Syntax
+-- =========================
+
+WITH CTE-Name1 AS
+(
+    SELECT ....
+    FROM ....
+    WHERE ...
+)
+, CTE-Name2 AS
+(
+    SELECT ...
+    FROM CTE-Name1
+    WHERE ...
+)
+SELECT ...
+FROM CTE-Name2
+WHERE ...;
+
+
+-- =========================
+-- Example
+-- =========================
+
+| order_id | customer_id | product_id | sales |
+| -------- | ----------- | ---------- | ----- |
+| 1        | 101         | 201        | 50    |
+| 2        | 101         | 202        | 70    |
+| 3        | 102         | 201        | 30    |
+| 4        | 102         | 203        | 90    |
+| 5        | 103         | 202        | 50    |
+
+
+-- 🔥 Query using Nested CTE
+
+WITH total_sales AS (
+    SELECT customer_id, SUM(sales) AS total_sales
+    FROM orders
+    GROUP BY customer_id
+),
+ranked_sales AS (
+    SELECT *,
+           RANK() OVER (ORDER BY total_sales DESC) AS rnk
+    FROM total_sales
+)
+SELECT *
+FROM ranked_sales
+WHERE rnk <= 2;
+
+
+-- =========================
+-- Output
+-- =========================
+
+| customer_id | total_sales | rnk |
+|-------------|-------------|-----|
+| 101         | 120         | 1   |
+| 102         | 120         | 1   |
+
+
+-- =========================
+-- 🔹 Better Alternative (Recommended ✅)
+-- =========================
+
+👉 Use Multiple CTEs instead of nesting
+
+WITH inner_cte AS (
+    SELECT customer_id, SUM(sales) AS total_sales
+    FROM orders
+    GROUP BY customer_id
+),
+outer_cte AS (
+    SELECT *,
+           RANK() OVER (ORDER BY total_sales DESC) AS rnk
+    FROM inner_cte
+)
+SELECT *
+FROM outer_cte
+WHERE rnk <= 2;
+
+
+-- =========================
+-- 🔹 Use-Cases
+-- =========================
+
+-- 1. 🎯 Multi-step transformations
+-- 2. 🎯 Layered aggregations
+-- 3. 🎯 Complex reporting queries
+
+
+-- =========================
+-- ❗ Important Notes
+-- =========================
+
+👉 Not supported in PostgreSQL ❗  
+👉 Harder to read and debug  
+👉 Prefer chained CTEs (cleaner approach)  
+
+
+-- =========================
+-- 🎯 Interview One-Liner
+-- =========================
+
+👉 Nested CTEs define a CTE inside another CTE, but are 
+rarely used due to limited support and readability issues.
