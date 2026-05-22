@@ -1,7 +1,7 @@
 # SQL Interview Question
 # =========================
 # 🔥 SQL Execution Order
-# =========================
+# ========================
 
 👉 SQL queries are NOT executed in the same order as written.
 
